@@ -25,6 +25,7 @@ type AzureProvider struct {
 	Tenant          string
 	GraphGroupField string
 	isV2Endpoint    bool
+	AzureChina      bool
 }
 
 var _ Provider = (*AzureProvider)(nil)
@@ -33,7 +34,8 @@ const (
 	azureProviderName           = "Azure"
 	azureDefaultScope           = "openid"
 	azureDefaultGraphGroupField = "id"
-	azureV2Scope                = "https://graph.microsoft.com/.default"
+	//azureV2Scope                = "https://graph.microsoft.com/.default"
+	//azureV2ScopeChina           = "https://microsoftgraph.chinacloudapi.cn/.default"
 )
 
 var (
@@ -57,6 +59,8 @@ var (
 		Host:   "graph.microsoft.com",
 		Path:   "/v1.0/me",
 	}
+
+	azureV2Scope = "https://graph.microsoft.com/.default"
 )
 
 // NewAzureProvider initiates a new AzureProvider
@@ -85,6 +89,16 @@ func NewAzureProvider(p *ProviderData, opts options.AzureOptions) *AzureProvider
 	graphGroupField := azureDefaultGraphGroupField
 	if opts.GraphGroupField != "" {
 		graphGroupField = opts.GraphGroupField
+	}
+
+	//impl1 with extra configuration
+	if opts.AzureChina {
+		azureV2Scope = "https://microsoftgraph.chinacloudapi.cn/.default"
+	}
+
+	//impl2 which set automatically based on domain in login-url
+	if strings.Contains(p.LoginURL.String(), "microsoftonline.cn") {
+		azureV2Scope = "https://microsoftgraph.chinacloudapi.cn/.default"
 	}
 
 	isV2Endpoint := false

@@ -145,6 +145,7 @@ type AzureOptions struct {
 	// GraphGroupField configures the group field to be used when building the groups list from Microsoft Graph
 	// Default value is 'id'
 	GraphGroupField string `json:"graphGroupField,omitempty"`
+	AzureChina      bool   `json:"azureChina,omitempty"`
 }
 
 type ADFSOptions struct {
